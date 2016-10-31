@@ -46,10 +46,44 @@ CloudFormation template, specify:
 
   You may use this value to specify options like "--theme THEMENAME".
 
-  People with warped minds could stick a semicolon (;) in this and run
-  arbitrary static site post-processing commands in the AWS Lambda
-  environment. This is not guaranteed to be supported in future
-  versions.
+  People with warped minds could stick a semicolon (;) in this
+  CloudFormation template parameter and run arbitrary static site
+  post-processing commands in the AWS Lambda environment. This is not
+  recommended and is not guaranteed to be supported in future
+  versions. Better to fork and modify this repository to customize an
+  AWS Lambda function plugin to your needs.
+
+Here is a sample stack creation command using aws-cli:
+
+    domain=example.com
+    email=yourrealemail@anotherdomain.com
+
+    template_url=https://s3.amazonaws.com/run.alestic.com/cloudformation/aws-git-backed-static-website-cloudformation.yml
+    stackname=${domain/./-}-$(date +%Y%m%d-%H%M%S)
+    region=us-east-1
+
+    aws cloudformation create-stack \
+      --region "$region" \
+      --stack-name "$stackname" \
+      --capabilities CAPABILITY_IAM \
+      --capabilities CAPABILITY_NAMED_IAM \
+      --template-body "file://$template" \
+      --tags "Key=Name,Value=$stackname" \
+      --parameters \
+        "ParameterKey=DomainName,ParameterValue=$domain" \
+        "ParameterKey=NotificationEmail,ParameterValue=$email" \
+        "ParameterKey=GeneratorLambdaFunctionS3Bucket,ParameterValue=run.alestic.com" \
+        "ParameterKey=GeneratorLambdaFunctionS3Key,ParameterValue=lambda/aws-lambda-codepipeline-site-generator-hugo.zip"
+
+    echo region=$region stackname=$stackname
+
+The important point in the above command is the last two "Generator*"
+parameters, which specify the Hugo AWS Lambda static site generator
+plugin location.
+
+See the main [AWS Git-backed static website stack][stack]
+documentation for more details on how to work with the stack once it
+is launched.
 
 [stack]: https://github.com/alestic/aws-git-backed-static-website
 [hugo]: https://gohugo.io/
