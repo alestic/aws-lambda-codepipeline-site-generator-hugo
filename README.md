@@ -66,20 +66,18 @@ Here is a sample stack creation command using aws-cli:
       --region "$region" \
       --stack-name "$stackname" \
       --capabilities CAPABILITY_IAM \
-      --capabilities CAPABILITY_NAMED_IAM \
-      --template-body "file://$template" \
+      --template-url "$template_url" \
       --tags "Key=Name,Value=$stackname" \
       --parameters \
         "ParameterKey=DomainName,ParameterValue=$domain" \
         "ParameterKey=NotificationEmail,ParameterValue=$email" \
         "ParameterKey=GeneratorLambdaFunctionS3Bucket,ParameterValue=run.alestic.com" \
         "ParameterKey=GeneratorLambdaFunctionS3Key,ParameterValue=lambda/aws-lambda-codepipeline-site-generator-hugo.zip"
-
     echo region=$region stackname=$stackname
 
 The important point in the above command is the last two "Generator*"
-parameters, which specify the Hugo AWS Lambda static site generator
-plugin location.
+parameters, which specify the location of the Hugo AWS Lambda static
+site generator plugin.
 
 See the main [AWS Git-backed static website stack][stack]
 documentation for more details on how to work with the stack once it
