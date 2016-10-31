@@ -1,0 +1,23 @@
+#!/bin/bash -ex
+#
+# Build AWS Lambda function ZIP file and upload to S3
+#
+# Usage: ./build-upload-aws-lambda-function S3BUCKET S3KEY
+#
+# For example:
+# ./build-upload-aws-lambda-function run.alestic.com lambda/aws-lambda-codepipeline-site-generator-subdirectory.zip
+#
+
+s3bucket=${1:?Specify target S3 bucket name}
+s3key=${2:?Specify target S3 key}
+target=s3://$s3bucket/$s3key
+
+tmpdir=$(mktemp -d /tmp/lambda-XXXXXX)
+zipfile=$tmpdir/lambda.zip
+
+zip -r9 $zipfile index.py
+
+aws s3 cp --acl public-read $zipfile $target
+
+# Clean up
+rm -r $tmpdir
