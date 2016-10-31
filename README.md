@@ -1,9 +1,9 @@
 
-# Static site generator plugin: Subdirectory (copy part of tree)
+# Static site generator plugin: Hugo
 
 This is a static site generator plugin for the [AWS Git-backed static
-website stack][stack]. This plugin copies an entire subdirectory of
-the Git source into the target static website.
+website stack][stack]. This plugin treats the Git repository content
+as source for [Hugo][hugo], a static website generator.
 
 This plugin takes the form of an AWS Lambda function that is deployed
 in a ZIP file in an S3 bucket. When the static website stack is
@@ -18,15 +18,13 @@ contents. This function turns that site source into the static web
 site contents, and passes back a ZIP file. The stack then syncs that
 content to the S3 bucket that serves the static website.
 
-This subdirectory function plugin is almost the same as the
-["identity" plugin][identity], except that it only copies part of the
-Git branch repository content. All other content is left out of the
-target website.
+This Hugo static site generator plugin runs the following command:
 
-This subdirectory function plugin is useful if your Git repository
-contains a lot of different things including site source,
-documentation, etc., and one subdirectory contains the resulting
-static website that you want to publish.
+    ./hugo --source=SOURCEDIR --destination=SITEDIR
+
+where SOURCEDIR contains the content of the CodeCommit Git repository,
+and SITEDIR is the resulting content that will be sync'd to the S3
+bucket serving the static website.
 
 When passing parameters to the AWS Git-backed static website
 CloudFormation template, specify:
@@ -36,25 +34,22 @@ CloudFormation template, specify:
 
 - **GeneratorLambdaFunctionS3Key** - The S3 key containing this AWS
   Lambda function ZIP file.  E.g.,
-  "lambda/aws-lambda-codepipeline-site-generator-subdirectory.zip"
+  "lambda/aws-lambda-codepipeline-site-generator-hugo.zip"
 
 - **GeneratorLambdaFunctionRuntime** - "python2.7"
 
 - **GeneratorLambdaFunctionHandler** - "index.handler"
 
-- **GeneratorLambdaFunctionUserParameters** - Specify the path to the
-  subdirectory in the Git repository that contains the static website
-  content. This should not start with a leading "/" and it should not
-  end with a trailing "/".
+- **GeneratorLambdaFunctionUserParameters** - If this value starts
+  with a dash (-) then it will be appended to the hugo command
+  line. If it does not start with a dash, then it will be ignored.
 
-  For example, if your Git repository has a top level subdirectory
-  named "htdocs" then pass that string as the user parameters
-  value. If it is under a directory like "site/generated/public-html",
-  then specify that as the value.
+  You may use this value to specify options like "--theme THEMENAME".
 
-**WARNING!** If you do not specify the user parameters value
-correctly, you may accidentally publish content in your Git repository
-that you did not intend to make public.
+  People with warped minds could stick a semicolon (;) in this and run
+  arbitrary static site post-processing commands in the AWS Lambda
+  environment. This is not guaranteed to be supported in future
+  versions.
 
 [stack]: https://github.com/alestic/aws-git-backed-static-website
-[identity]: https://github.com/alestic/aws-lambda-codepipeline-site-generator-identity
+[hugo]: https://gohugo.io/

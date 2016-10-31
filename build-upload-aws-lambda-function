@@ -5,7 +5,7 @@
 # Usage: ./build-upload-aws-lambda-function S3BUCKET S3KEY
 #
 # For example:
-# ./build-upload-aws-lambda-function run.alestic.com lambda/aws-lambda-codepipeline-site-generator-subdirectory.zip
+# ./build-upload-aws-lambda-function run.alestic.com lambda/aws-lambda-codepipeline-site-generator-hugo.zip
 #
 
 s3bucket=${1:?Specify target S3 bucket name}
@@ -15,8 +15,21 @@ target=s3://$s3bucket/$s3key
 tmpdir=$(mktemp -d /tmp/lambda-XXXXXX)
 zipfile=$tmpdir/lambda.zip
 
+# Add AWS Lambda function file to ZIP file
 zip -r9 $zipfile index.py
 
+# Download and add Hugo binary executable to ZIP file
+hugo_version="0.17"
+download_url="https://github.com/spf13/hugo/releases/download/v$hugo_version/hugo_${hugo_version}_Linux-64bit.tar.gz"
+(
+ cd $tmpdir
+ wget -qO hugo.tar.gz $download_url
+ tar xvzf hugo.tar.gz
+ mv hugo_${hugo_version}*/hugo_${version}* ./hugo
+ zip -r9 $zipfile hugo
+)
+
+# Upload AWS Lambda function ZIP file to S3
 aws s3 cp --acl public-read $zipfile $target
 
 # Clean up
