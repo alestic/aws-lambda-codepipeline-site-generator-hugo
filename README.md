@@ -34,7 +34,7 @@ CloudFormation template, specify:
 
 - **GeneratorLambdaFunctionS3Key** - The S3 key containing this AWS
   Lambda function ZIP file.  E.g.,
-  "lambda/aws-lambda-codepipeline-site-generator-hugo.zip"
+  "lambda/aws-lambda-site-generator-hugo.zip"
 
 - **GeneratorLambdaFunctionRuntime** - "python2.7"
 
@@ -72,7 +72,7 @@ Here is a sample stack creation command using aws-cli:
         "ParameterKey=DomainName,ParameterValue=$domain" \
         "ParameterKey=NotificationEmail,ParameterValue=$email" \
         "ParameterKey=GeneratorLambdaFunctionS3Bucket,ParameterValue=run.alestic.com" \
-        "ParameterKey=GeneratorLambdaFunctionS3Key,ParameterValue=lambda/aws-lambda-codepipeline-site-generator-hugo.zip"
+        "ParameterKey=GeneratorLambdaFunctionS3Key,ParameterValue=lambda/aws-lambda-site-generator-hugo.zip"
     echo region=$region stackname=$stackname
 
 The important point in the above command is the last two "Generator*"
