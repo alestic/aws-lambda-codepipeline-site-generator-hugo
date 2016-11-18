@@ -2,15 +2,16 @@
 #
 # Build AWS Lambda function ZIP file and upload to S3
 #
-# Usage: ./build-upload-aws-lambda-function S3BUCKET S3KEY
+# Usage: ./build-upload-aws-lambda-function S3BUCKET S3KEY [HUGOVERSION]
 #
 # For example:
-# ./build-upload-aws-lambda-function run.alestic.com lambda/aws-lambda-site-generator-hugo.zip
+# ./build-upload-aws-lambda-function run.alestic.com lambda/aws-lambda-site-generator-hugo.zip [0.17]
 #
 
 s3bucket=${1:?Specify target S3 bucket name}
 s3key=${2:?Specify target S3 key}
 target=s3://$s3bucket/$s3key
+hugo_version="${3:-0.17}"
 
 tmpdir=$(mktemp -d /tmp/lambda-XXXXXX)
 zipfile=$tmpdir/lambda.zip
@@ -19,8 +20,19 @@ zipfile=$tmpdir/lambda.zip
 zip -r9 $zipfile index.py
 
 # Download and add Hugo binary executable to ZIP file
-hugo_version="0.17"
-download_url="https://github.com/spf13/hugo/releases/download/v$hugo_version/hugo_${hugo_version}_Linux-64bit.tar.gz"
+download_url="https://github.com/spf13/hugo/releases/download/"
+if [[ "0.14" == $hugo_version ]] ; then
+  download_url="${download_url}v0.14/hugo_0.14_linux_amd64.tar.gz"
+fi
+if [[ "0.15" == $hugo_version ]] ; then
+  download_url="${download_url}v0.15/hugo_0.15_linux_amd64.tar.gz"
+fi
+if [[ "0.16" == $hugo_version ]] ; then
+  download_url="${download_url}v0.16/hugo_0.16_linux-64bit.tgz"
+fi
+if [[ "0.17" == $hugo_version ]] ; then
+  download_url="${download_url}v0.17/hugo_0.17_Linux-64bit.tar.gz"
+fi
 (
  cd $tmpdir
  wget -qO hugo.tar.gz $download_url
