@@ -5,7 +5,7 @@
 # Usage: ./build-upload-aws-lambda-function S3BUCKET S3KEY [HUGOVERSION]
 #
 # For example:
-# ./build-upload-aws-lambda-function run.alestic.com lambda/aws-lambda-site-generator-hugo.zip [0.17]
+# ./build-upload-aws-lambda-function run.alestic.com lambda/aws-lambda-site-generator-hugo-0.17.zip 0.17
 #
 
 s3bucket=${1:?Specify target S3 bucket name}
