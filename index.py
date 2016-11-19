@@ -16,6 +16,8 @@ import os
 import zipfile
 import tempfile
 import shutil
+import shlex
+import subprocess
 import traceback
 
 code_pipeline = boto3.client('codepipeline')
@@ -40,10 +42,10 @@ def setup(event):
     key_secret = credentials['secretAccessKey']
     session_token = credentials['sessionToken']
     session = Session(aws_access_key_id=key_id,
-        aws_secret_access_key=key_secret,
-        aws_session_token=session_token)
+                      aws_secret_access_key=key_secret,
+                      aws_session_token=session_token)
     s3 = session.client('s3',
-        config=botocore.client.Config(signature_version='s3v4'))
+                        config=botocore.client.Config(signature_version='s3v4'))
 
     return (job_id, s3, from_bucket, from_key, from_revision,
             to_bucket, to_key, user_parameters)
@@ -95,8 +97,8 @@ def handler(event, context):
 
 def generate_static_site(source_dir, site_dir, user_parameters):
     # Run Hugo static site generator
-    command = "./hugo --source=" + source_dir + " --destination=" + site_dir
+    command = ["./hugo", "--source=" + source_dir, "--destination=" + site_dir]
     if user_parameters.startswith("-"):
-        command += " " + user_parameters
+        command.extend(shlex.split(user_parameters))
     print(command)
-    print(os.popen(command).read())
+    print(subprocess.check_output(command, stderr=subprocess.STDOUT))
