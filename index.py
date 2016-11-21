@@ -101,4 +101,9 @@ def generate_static_site(source_dir, site_dir, user_parameters):
     if user_parameters.startswith("-"):
         command.extend(shlex.split(user_parameters))
     print(command)
-    print(subprocess.check_output(command, stderr=subprocess.STDOUT))
+    try:
+        print(subprocess.check_output(command, stderr=subprocess.STDOUT))
+    except CalledProcessError as e:
+        print("ERROR return code: ", e.returncode)
+        print("ERROR output: ", e.output)
+        raise
