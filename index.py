@@ -103,7 +103,7 @@ def generate_static_site(source_dir, site_dir, user_parameters):
     print(command)
     try:
         print(subprocess.check_output(command, stderr=subprocess.STDOUT))
-    except CalledProcessError as e:
+    except subprocess.CalledProcessError as e:
         print("ERROR return code: ", e.returncode)
         print("ERROR output: ", e.output)
         raise
