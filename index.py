@@ -84,7 +84,7 @@ def handler(event, context):
         code_pipeline.put_job_success_result(jobId=job_id)
 
     except Exception as e:
-        print(e)
+        print("ERROR: " + repr(e))
         traceback.print_exc()
         # Tell CodePipeline we failed
         code_pipeline.put_job_failure_result(jobId=job_id, failureDetails={'message': e, 'type': 'JobFailed'})
@@ -103,7 +103,7 @@ def generate_static_site(source_dir, site_dir, user_parameters):
     print(command)
     try:
         print(subprocess.check_output(command, stderr=subprocess.STDOUT))
-    except CalledProcessError as e:
+    except subprocess.CalledProcessError as e:
         print("ERROR return code: ", e.returncode)
         print("ERROR output: ", e.output)
         raise
