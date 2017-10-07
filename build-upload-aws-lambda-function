@@ -20,24 +20,12 @@ zipfile=$tmpdir/lambda.zip
 zip -r9 $zipfile index.py
 
 # Download and add Hugo binary executable to ZIP file
-download_url="https://github.com/spf13/hugo/releases/download/"
-if [[ "0.14" == $hugo_version ]] ; then
-  download_url="${download_url}v0.14/hugo_0.14_linux_amd64.tar.gz"
-fi
-if [[ "0.15" == $hugo_version ]] ; then
-  download_url="${download_url}v0.15/hugo_0.15_linux_amd64.tar.gz"
-fi
-if [[ "0.16" == $hugo_version ]] ; then
-  download_url="${download_url}v0.16/hugo_0.16_linux-64bit.tgz"
-fi
-if [[ "0.17" == $hugo_version ]] ; then
-  download_url="${download_url}v0.17/hugo_0.17_Linux-64bit.tar.gz"
-fi
+download_url="https://github.com/gohugoio/hugo/releases/download/v${hugo_version}/hugo_${hugo_version}_Linux-64bit.tar.gz"
+
 (
  cd $tmpdir
  wget -qO hugo.tar.gz $download_url
  tar xvzf hugo.tar.gz
- mv hugo_${hugo_version}*/hugo_${version}* ./hugo
  zip -r9 $zipfile hugo
 )
 
