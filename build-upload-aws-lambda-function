@@ -15,7 +15,7 @@ function ver_compare {
 s3bucket=${1:?Specify target S3 bucket name}
 s3key=${2:?Specify target S3 key}
 target=s3://$s3bucket/$s3key
-hugo_version="${3:?Specify hugo version, eg: 0.36.1}"
+hugo_version="${3:-0.36.1}"
 
 tmpdir=$(mktemp -d /tmp/lambda-XXXXXX)
 zipfile=$tmpdir/lambda.zip
