@@ -23,11 +23,21 @@ zipfile=$tmpdir/lambda.zip
 # Add AWS Lambda function file to ZIP file
 zip -r9 $zipfile index.py
 
-download_url="https://github.com/gohugoio/hugo/releases/download/v${hugo_version}/hugo_${hugo_version}_Linux-64bit.tar.gz"
+download_url="https://github.com/gohugoio/hugo/releases/download/v${hugo_version}/hugo_extended_${hugo_version}_Linux-64bit.tar.gz"
+
+# Hugo extended was not available before 0.43
 
 # Hugo zip format changes on 0.21 0.16, and change download URL on 0.17 0.16 and before, so we have to treat them differently:
 
-if [ $(ver_compare $hugo_version) -ge $(ver_compare 0.21) ] ; then
+if [ $(ver_compare $hugo_version) -ge $(ver_compare 0.43) ] ; then
+    (
+     cd $tmpdir
+     wget -qO hugo.tar.gz $download_url
+     tar xvzf hugo.tar.gz
+     zip -r9 $zipfile hugo
+    )
+elif [ $(ver_compare $hugo_version) -ge $(ver_compare 0.21) ] ; then
+    download_url="https://github.com/gohugoio/hugo/releases/download/v${hugo_version}/hugo_${hugo_version}_Linux-64bit.tar.gz"
     (
      cd $tmpdir
      wget -qO hugo.tar.gz $download_url
@@ -35,6 +45,7 @@ if [ $(ver_compare $hugo_version) -ge $(ver_compare 0.21) ] ; then
      zip -r9 $zipfile hugo
     )
 elif [ $(ver_compare $hugo_version) -ge $(ver_compare 0.17) ] ; then
+    download_url="https://github.com/gohugoio/hugo/releases/download/v${hugo_version}/hugo_${hugo_version}_Linux-64bit.tar.gz"
     (
      cd $tmpdir
      wget -qO hugo.tar.gz $download_url
