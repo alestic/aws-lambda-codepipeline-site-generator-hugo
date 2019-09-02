@@ -95,6 +95,18 @@ def handler(event, context):
 
     return "complete"
 
+def workaround_timestamps(site_dir):
+    # ZIP can't handle files older than 1970
+    # Temporary workaround for bad dates in submodiules.
+    command = ["find", site_dir, "-mtime", "+10950", "-exec", "touch", "{}", ";"]
+    print(command)
+    try:
+        print(subprocess.check_output(command, stderr=subprocess.STDOUT))
+    except subprocess.CalledProcessError as e:
+        print("ERROR return code (find): ", e.returncode)
+        print("ERROR output (find): ", e.output)
+        raise
+
 def generate_static_site(source_dir, site_dir, user_parameters):
     # Run Hugo static site generator
     command = ["./hugo", "--source=" + source_dir, "--destination=" + site_dir]
@@ -107,3 +119,4 @@ def generate_static_site(source_dir, site_dir, user_parameters):
         print("ERROR return code: ", e.returncode)
         print("ERROR output: ", e.output)
         raise
+    workaround_timestamps(site_dir)
