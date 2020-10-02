@@ -13,9 +13,9 @@ AWS Lambda function to be created and run in the new stack.
 
 When the stack is running and the CodeCommit Git repository contents
 are updated, CodePipeline automatically invokes this AWS Lambda
-function, providing it a ZIP file of the CodeCommit Git branch
+function, providing it as ZIP file of the CodeCommit of Git branch
 contents. This function turns that site source into the static web
-site contents, and passes back a ZIP file. The stack then syncs that
+site contents, and passes back a ZIP file. The stack then syncs the
 content to the S3 bucket that serves the static website.
 
 This Hugo static site generator plugin runs the following command:
