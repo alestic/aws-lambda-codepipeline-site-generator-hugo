@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3.9
 #
 # AWS Lambda function static site generator plugin: Hugo
 #
@@ -97,7 +97,7 @@ def handler(event, context):
 
 def workaround_timestamps(site_dir):
     # ZIP can't handle files older than 1970
-    # Temporary workaround for bad dates in submodiules.
+    # Temporary workaround for bad dates in submodules.
     command = ["find", site_dir, "-mtime", "+10950", "-exec", "touch", "{}", ";"]
     print(command)
     try:
@@ -119,4 +119,4 @@ def generate_static_site(source_dir, site_dir, user_parameters):
         print("ERROR return code: ", e.returncode)
         print("ERROR output: ", e.output)
         raise
-    workaround_timestamps(site_dir)
+#    workaround_timestamps(site_dir)
